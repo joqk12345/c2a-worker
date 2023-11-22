@@ -1,11 +1,9 @@
 import threading
-from fastapi import FastAPI
 import logger
 import apis as _apis_
 from handler import worker
-
+from fastapi import FastAPI
 app = FastAPI()
-
 
 # hook
 async def startup_event():
@@ -39,21 +37,12 @@ async def stop():
 
 def run_fastapi():
     import uvicorn
-    # uvicorn.run("main:app", host="0.0.0.0", port=8000,reload=True)
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000,reload=True)
 
-def start():
-    # 多线程配合
-    fastapithread = threading.Thread(target=run_fastapi)
 
-    # 每个线程都进入线程入口函数启动线程执行
-    fastapithread.start()
-    worker.entrypoint()
-
-    # 每个线程都出发等待结果
-    fastapithread.join()
 
 if __name__ == '__main__':
-    start()
-
-
+    run_fastapi()
+    threading.Thread(target=run_fastapi)
+    logger.notice("start worker")
+    worker.main()
