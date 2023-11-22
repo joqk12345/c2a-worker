@@ -1,9 +1,12 @@
 import time
 from threading import Thread
 import logger
+from apis.c2a import state
+
 
 def process_worker():
     while True:
+        logger.notice("running state:{}",state())
         logger.notice("processing")
         time.sleep(5)
 
